@@ -13,6 +13,7 @@ router_v1.register(
     CommentViewSet,
     basename='comments'
 )
+
 urlpatterns = [
     path('v1/', include('djoser.urls')),
     path('v1/', include('djoser.urls.jwt')),
