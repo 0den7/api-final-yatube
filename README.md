@@ -36,13 +36,17 @@ python manage.py runserver
 
 ## Документация:
 
-Когда вы запустите проект, по адресу  ```http http://127.0.0.1:8000/redoc/``` будет доступна документация для API Yatube.
+Когда вы запустите проект, по адресу  ```http
+http://127.0.0.1:8000/redoc/
+``` будет доступна документация для API Yatube.
 
 ## Примеры запросов:
 
 1. Регистрация пользователя:
 ### Запроc:
-POST ```http http://127.0.0.1:8000/api/v1/users/```
+POST ```http
+http://127.0.0.1:8000/api/v1/users/
+```
 Content-Type: application/json
 ```json
 {
@@ -61,7 +65,9 @@ Content-Type: application/json
 
 2. Получение JWT-токена:
 ### Запроc:
-POST ```http http://127.0.0.1:8000/api/v1/jwt/create/```
+POST ```http
+http://127.0.0.1:8000/api/v1/jwt/create/
+```
 Content-Type: application/json
 ```json
 {
@@ -79,9 +85,15 @@ Content-Type: application/json
 
 3. Создание поста:
 ### Запроc:
-POST ```http http://127.0.0.1:8000/api/v1/posts/```
+POST ```http
+http://127.0.0.1:8000/api/v1/posts/
+```
+```
 Authorization: Bearer <access_token>
+```
+```
 Content-Type: application/json
+```
 ```json
 {
     "text": "Мой первый пост!",
