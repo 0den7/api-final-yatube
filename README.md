@@ -5,64 +5,91 @@
 ## Как запустить проект:
 
 Клонировать репозиторий и перейти в него в командной строке:
-```git clone git@github.com:0den7/api-final-yatube.git```
-```cd api-final-yatube```
+```bash
+git clone git@github.com:0den7/api-final-yatube.git
+```
+```bash
+cd api-final-yatube
+```
 Создать и активировать виртуальное окружение:
-```python -m venv venv```
-```. venv/Scripts/activate```
+```bash
+python -m venv venv
+```
+```bash
+. venv/Scripts/activate
+```
 Установить зависимости из файла requirements.txt:
-```python -m pip install --upgrade pip```
-```pip install -r requirements.txt```
+```bash
+python -m pip install --upgrade pip
+```
+```bash
+pip install -r requirements.txt
+```
 Выполнить миграции:
-```python manage.py migrate```
+```bash
+python manage.py migrate
+```
 Запустить проект:
-```python manage.py runserver```
+```bash
+python manage.py runserver
+```
 
 ## Документация:
 
-Когда вы запустите проект, по адресу  ```http://127.0.0.1:8000/redoc/``` будет доступна документация для API Yatube.
+Когда вы запустите проект, по адресу  ```http http://127.0.0.1:8000/redoc/``` будет доступна документация для API Yatube.
 
 ## Примеры запросов:
 
 1. Регистрация пользователя:
 ### Запроc:
-POST ```http://127.0.0.1:8000/api/v1/users/```
+POST ```http http://127.0.0.1:8000/api/v1/users/```
 Content-Type: application/json
+```json
 {
     "username": "new_user",
     "password": "your_password"
 }
+```
 ### Ответ (201 Created):
+```json
 {
     "email": "",
     "username": "new_user",
     "id": 1
 }
+```
 
 2. Получение JWT-токена:
 ### Запроc:
-POST ```http://127.0.0.1:8000/api/v1/jwt/create/```
+POST ```http http://127.0.0.1:8000/api/v1/jwt/create/```
 Content-Type: application/json
+```json
 {
     "username": "new_user",
     "password": "your_password"
 }
+```
 ### Ответ (200 OK):
+```json
 {
     "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
     "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 }
+```
 
 3. Создание поста:
 ### Запроc:
-POST ```http://127.0.0.1:8000/api/v1/posts/```
+POST ```http http://127.0.0.1:8000/api/v1/posts/```
 Authorization: Bearer <access_token>
 Content-Type: application/json
+```json
 {
     "text": "Мой первый пост!",
     "group": 1
 }
+```
 ### Ответ (201 Created):
+```json
 {
     "id": 1,
     "author": "new_user",
@@ -71,6 +98,7 @@ Content-Type: application/json
     "image": null,
     "group": 1
 }
+```
 
 ## Права доступа:
 
