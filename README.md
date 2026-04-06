@@ -36,19 +36,19 @@ python manage.py runserver
 
 ## Документация:
 
-Когда вы запустите проект, по адресу  ```http
+Когда вы запустите проект, документация API будет доступна по адресу:
+```text
 http://127.0.0.1:8000/redoc/
-``` будет доступна документация для API Yatube.
+```
 
 ## Примеры запросов:
 
 1. Регистрация пользователя:
 ### Запроc:
-POST ```http
-http://127.0.0.1:8000/api/v1/users/
-```
+```http
+POST http://127.0.0.1:8000/api/v1/users/
 Content-Type: application/json
-```json
+
 {
     "username": "new_user",
     "password": "your_password"
@@ -65,11 +65,10 @@ Content-Type: application/json
 
 2. Получение JWT-токена:
 ### Запроc:
-POST ```http
-http://127.0.0.1:8000/api/v1/jwt/create/
-```
+```http
+POST http://127.0.0.1:8000/api/v1/jwt/create/
 Content-Type: application/json
-```json
+
 {
     "username": "new_user",
     "password": "your_password"
@@ -85,16 +84,11 @@ Content-Type: application/json
 
 3. Создание поста:
 ### Запроc:
-POST ```http
-http://127.0.0.1:8000/api/v1/posts/
-```
-```
+```http
+POST http://127.0.0.1:8000/api/v1/posts/
 Authorization: Bearer <access_token>
-```
-```
 Content-Type: application/json
-```
-```json
+
 {
     "text": "Мой первый пост!",
     "group": 1
@@ -114,9 +108,9 @@ Content-Type: application/json
 
 ## Права доступа:
 
-Анонимные пользователи: только чтение
-Аутентифицированные пользователи: создание, изменение и удаление своих постов и комментариев
-Подписки доступны только аутентифицированным пользователям
+- Анонимные пользователи: только чтение
+- Аутентифицированные пользователи: создание, изменение и удаление своих постов и комментариев
+- Подписки доступны только аутентифицированным пользователям
 
 ## Автор:
 
