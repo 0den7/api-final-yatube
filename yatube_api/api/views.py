@@ -1,20 +1,19 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import viewsets, filters, permissions, exceptions
+from rest_framework import viewsets, filters, permissions, pagination, mixins
 
-from posts.models import Post, Group, Follow
+from posts.models import Post, Group
 from api.serializers import (
     PostSerializer, GroupSerializer, CommentSerializer, FollowSerializer
 )
-from .permissions import IsAuthorOrReadOnly
-from .pagination import PostPagination
+from .permissions import IsAuthenticatedOrAuthorOrReadOnly
 
 
 class PostViewSet(viewsets.ModelViewSet):
     """Вьюсет для работы с постами."""
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    permission_classes = (IsAuthorOrReadOnly,)
-    pagination_class = PostPagination
+    permission_classes = (IsAuthenticatedOrAuthorOrReadOnly,)
+    pagination_class = pagination.LimitOffsetPagination
     filter_backends = (filters.OrderingFilter,)
     ordering_fields = ('pub_date',)
     ordering = ('pub_date',)
@@ -28,23 +27,22 @@ class GroupViewSet(viewsets.ReadOnlyModelViewSet):
     """Вьюсет для работы с группами (только для чтения)."""
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
+    permission_classes = (permissions.AllowAny,)
 
 
 class CommentViewSet(viewsets.ModelViewSet):
     """Вьюсет для работы с комментариями."""
     serializer_class = CommentSerializer
-    permission_classes = (IsAuthorOrReadOnly,)
-    filter_backends = (filters.OrderingFilter,)
-    ordering_fields = ('created',)
-    ordering = ('created',)
+    permission_classes = (IsAuthenticatedOrAuthorOrReadOnly,)
+
+    def get_post(self):
+        """Метод возвращает пост по post_id из эндпоинта или HTTP404."""
+        post_id = self.kwargs.get('post_id')
+        return get_object_or_404(Post, id=post_id)
 
     def get_queryset(self):
-        """
-        Метод возвращает кверисет комментариев для отдельного поста из
-        post_id из эндпоинта.
-        """
-        post_id = self.kwargs.get('post_id')
-        post = get_object_or_404(Post, id=post_id)
+        """Метод возвращает комментарии к отдельному посту."""
+        post = self.get_post()
         return post.comments.all()
 
     def perform_create(self, serializer):
@@ -52,13 +50,18 @@ class CommentViewSet(viewsets.ModelViewSet):
         Метод для автоматического установления автора и поста
         при создании комментария.
         """
-        post_id = self.kwargs.get('post_id')
-        post = get_object_or_404(Post, id=post_id)
+        post = self.get_post()
         serializer.save(author=self.request.user, post=post)
 
 
-class FollowViewSet(viewsets.ModelViewSet):
-    """Вьюсет для работы с подписками."""
+class FollowViewSet(
+    mixins.CreateModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet
+):
+    """
+    Вьюсет для работы с подписками.
+    Поддерживает только GET (получение списка подписок) и POST
+    (создание подписки).
+    """
     serializer_class = FollowSerializer
     permission_classes = (permissions.IsAuthenticated,)
     filter_backends = (filters.SearchFilter,)
@@ -66,19 +69,8 @@ class FollowViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         """Возвращает только подписки текущего пользователя."""
-        return Follow.objects.filter(user=self.request.user)
+        return self.request.user.subscriptions.all()
 
     def perform_create(self, serializer):
-        """
-        Создает новую подписку с автоматическим установлением автора и
-        проверкой на дублирование подписки.
-        """
-        following = serializer.validated_data['following']
-        if Follow.objects.filter(
-            user=self.request.user,
-            following=following
-        ).exists():
-            raise exceptions.ValidationError({
-                'following': 'Вы уже подписаны на этого пользователя!'
-            })
+        """Автоматическое установление автора при подписке."""
         serializer.save(user=self.request.user)
