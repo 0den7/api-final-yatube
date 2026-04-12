@@ -70,7 +70,3 @@ class FollowViewSet(
     def get_queryset(self):
         """Возвращает только подписки текущего пользователя."""
         return self.request.user.subscriptions.all()
-
-    def perform_create(self, serializer):
-        """Автоматическое установление автора при подписке."""
-        serializer.save(user=self.request.user)
