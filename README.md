@@ -6,17 +6,17 @@
 
 - Python 3.12+
 
-- Django
+- Django 5.1
 
-- Django REST Framework
+- Django REST Framework 3.15
 
 - Djoser + Simple JWT
 
 - SQLite
 
-- Git и GitHub
-
 - Pytest
+
+- Git и GitHub
 
 ## Как запустить проект:
 
